@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chi tiết công việc</title>
+<style>
+body { font-family: Arial; max-width: 900px; margin: 40px auto; }
+</style>
+</head>
+<body>
+
+<a href="index.html">← Quay lại</a>
+<div id="jobDetail"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+async function loadJob() {
+  const res = await fetch(
+    "http://cms.local/api/jobs/" + id + "?publicationState=live&populate=*&t=" + Date.now()
+  );
+  const data = await res.json();
+  const job = data.data;
+
+  document.getElementById("jobDetail").innerHTML = `
+    <h1>${job.attributes.title}</h1>
+    <p><b>Địa điểm:</b> ${job.attributes.location}</p>
+    <p><b>Phòng ban:</b> ${job.attributes.department}</p>
+    <p><b>Mức lương:</b> ${job.attributes.salary}</p>
+    <hr/>
+    <div>${job.attributes.description}</div>
+  `;
+}
+
+loadJob();
+</script>
+
+</body>
+</html>
