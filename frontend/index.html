@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tuyển dụng</title>
+<style>
+body { font-family: Arial; max-width: 900px; margin: 40px auto; }
+.job { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+a { text-decoration: none; color: #007bff; }
+</style>
+</head>
+<body>
+
+<h1>Danh sách tuyển dụng</h1>
+<div id="jobs"></div>
+
+<script>
+async function loadJobs() {
+  const res = await fetch(
+    "http://cms.local/api/jobs?publicationState=live&sort=createdAt:desc&t=" + Date.now()
+  );
+  const data = await res.json();
+  const container = document.getElementById("jobs");
+  container.innerHTML = "";
+
+  if (!data.data.length) {
+    container.innerHTML = "<p>Chưa có vị trí tuyển dụng.</p>";
+    return;
+  }
+
+  data.data.forEach(job => {
+    container.innerHTML += `
+      <div class="job">
+        <h2>${job.attributes.title}</h2>
+        <p><b>Địa điểm:</b> ${job.attributes.location}</p>
+        <p><b>Phòng ban:</b> ${job.attributes.department}</p>
+        <a href="job.html?id=${job.id}">Xem chi tiết</a>
+      </div>
+    `;
+  });
+}
+
+loadJobs();
+</script>
+
+</body>
+</html>
